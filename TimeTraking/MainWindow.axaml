@@ -1,0 +1,309 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:models="using:TimeTraking.Models"
+        x:Class="TimeTraking.MainWindow"
+        Title="TimeTraking"
+        Width="980" Height="640"
+        MinWidth="760" MinHeight="480"
+        WindowStartupLocation="CenterScreen"
+        Background="#0F131A"
+        Foreground="#F8FAFC">
+
+    <Grid ColumnDefinitions="240,*">
+
+        <!-- Left Sidebar -->
+        <Border Grid.Column="0"
+                Background="#141923"
+                BorderBrush="#1F2937"
+                BorderThickness="0,0,1,0"
+                Padding="18">
+            <DockPanel LastChildFill="False">
+
+                <!-- Brand Header -->
+                <StackPanel DockPanel.Dock="Top" Spacing="4" Margin="0,0,0,22">
+                    <TextBlock Text="TimeTraking"
+                               FontSize="22" FontWeight="Bold"
+                               Foreground="#F8FAFC"/>
+                    <TextBlock Text="Трекер часу програм"
+                               FontSize="12" Foreground="#64748B"/>
+                </StackPanel>
+
+                <!-- Navigation Tabs -->
+                <StackPanel DockPanel.Dock="Top" Spacing="6" Margin="0,0,0,20">
+                    <TextBlock Text="РОЗДІЛИ"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="#64748B" Margin="4,0,0,4"/>
+
+                    <Button Name="TabTrackedButton"
+                            Click="TabTrackedButton_Click"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Background="#1E293B"
+                            Foreground="#F8FAFC"
+                            CornerRadius="8"
+                            Padding="12,10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Text="Відстежувані" FontWeight="Medium"/>
+                            <TextBlock Name="TrackedCountBadge" Grid.Column="1" Text="0"
+                                       Foreground="#38BDF8" FontWeight="SemiBold"/>
+                        </Grid>
+                    </Button>
+
+                    <Button Name="TabIgnoredButton"
+                            Click="TabIgnoredButton_Click"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Background="Transparent"
+                            Foreground="#94A3B8"
+                            CornerRadius="8"
+                            Padding="12,10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Grid.Column="0" Text="Ігноровані" FontWeight="Medium"/>
+                            <TextBlock Name="IgnoredCountBadge" Grid.Column="1" Text="0"
+                                       Foreground="#94A3B8" FontWeight="SemiBold"/>
+                        </Grid>
+                    </Button>
+                </StackPanel>
+
+                <!-- Primary Actions -->
+                <StackPanel DockPanel.Dock="Top" Spacing="8" Margin="0,0,0,20">
+                    <TextBlock Text="ДІЇ"
+                               FontSize="11" FontWeight="SemiBold"
+                               Foreground="#64748B" Margin="4,0,0,4"/>
+
+                    <Button Name="AddButton"
+                            Click="AddButton_Click"
+                            Content="+ Додати програму"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Background="#2563EB"
+                            Foreground="White"
+                            FontWeight="SemiBold"
+                            CornerRadius="8"
+                            Padding="12,10"/>
+
+                    <Button Name="DeleteButton"
+                            Click="DeleteButton_Click"
+                            Content="Видалити і не записувати"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Center"
+                            Background="#2A1B24"
+                            Foreground="#FDA4AF"
+                            BorderBrush="#4C1D30"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Padding="12,10"/>
+                </StackPanel>
+
+                <!-- Tracking Mode Option -->
+                <Border DockPanel.Dock="Top"
+                        Background="#1A2230"
+                        CornerRadius="10"
+                        Padding="12">
+                    <StackPanel Spacing="6">
+                        <CheckBox Name="TrackActiveOnlyCheckBox"
+                                  Content="Тільки активне вікно"
+                                  IsCheckedChanged="TrackActiveOnlyCheckBox_Changed"
+                                  Foreground="#E2E8F0"
+                                  FontSize="13"/>
+                        <TextBlock Text="Якщо вимкнено — рахує час для всіх відкритих програм зі списку."
+                                   FontSize="11"
+                                   Foreground="#64748B"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </Border>
+
+                <!-- Exit Button pinned at bottom -->
+                <Button Name="ExitButton"
+                        DockPanel.Dock="Bottom"
+                        Click="ExitButton_Click"
+                        Content="Вийти з додатку"
+                        HorizontalAlignment="Stretch"
+                        HorizontalContentAlignment="Center"
+                        Background="#1E293B"
+                        Foreground="#CBD5E1"
+                        CornerRadius="8"
+                        Padding="12,10"/>
+            </DockPanel>
+        </Border>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Column="1" RowDefinitions="Auto,Auto,*" Margin="24,20" RowSpacing="16">
+
+            <!-- Stats Header -->
+            <Grid Grid.Row="0" ColumnDefinitions="*,*,*" ColumnSpacing="14">
+                <Border Grid.Column="0" Background="#141923" BorderBrush="#1F2937" BorderThickness="1" CornerRadius="12" Padding="16,12">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Загальний час" FontSize="12" Foreground="#94A3B8"/>
+                        <TextBlock Name="TotalTimeText" Text="00:00:00" FontSize="22" FontWeight="Bold" Foreground="#38BDF8"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="1" Background="#141923" BorderBrush="#1F2937" BorderThickness="1" CornerRadius="12" Padding="16,12">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="Зараз запущено" FontSize="12" Foreground="#94A3B8"/>
+                        <TextBlock Name="RunningCountText" Text="0" FontSize="22" FontWeight="Bold" Foreground="#22C55E"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Grid.Column="2" Background="#141923" BorderBrush="#1F2937" BorderThickness="1" CornerRadius="12" Padding="16,12">
+                    <StackPanel Spacing="4">
+                        <TextBlock Text="У списку ігнору" FontSize="12" Foreground="#94A3B8"/>
+                        <TextBlock Name="IgnoredSummaryText" Text="0" FontSize="22" FontWeight="Bold" Foreground="#F472B6"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <!-- Search & Section Title -->
+            <Grid Grid.Row="1" ColumnDefinitions="*,260" ColumnSpacing="12">
+                <TextBlock Name="SectionTitleText"
+                           Grid.Column="0"
+                           Text="Відстежувані програми"
+                           FontSize="17" FontWeight="SemiBold"
+                           VerticalAlignment="Center"/>
+
+                <TextBox Name="FilterSearchBox"
+                         Grid.Column="1"
+                         PlaceholderText="Фільтр за назвою..."
+                         TextChanged="FilterSearchBox_TextChanged"
+                         Background="#141923"
+                         BorderBrush="#273244"
+                         CornerRadius="8"
+                         Padding="12,8"/>
+            </Grid>
+
+            <!-- Tracked Processes List -->
+            <Border Name="TrackedPanel"
+                    Grid.Row="2"
+                    Background="#141923"
+                    BorderBrush="#1F2937"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="6">
+                <ListBox Name="TaskListBox"
+                         Background="Transparent"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:TrackedApp">
+                            <Border Background="#1A2230"
+                                    CornerRadius="10"
+                                    Padding="12,10"
+                                    Margin="2,3">
+                                <Grid ColumnDefinitions="42,*,Auto,Auto" ColumnSpacing="14">
+
+                                    <!-- App Icon / Fallback Monogram -->
+                                    <Border Grid.Column="0"
+                                            Width="38" Height="38"
+                                            CornerRadius="9"
+                                            Background="#0F172A">
+                                        <Panel>
+                                            <Image Source="{Binding Icon}"
+                                                   Width="26" Height="26"
+                                                   IsVisible="{Binding HasIcon}"
+                                                   HorizontalAlignment="Center"
+                                                   VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding InitialLetter}"
+                                                       IsVisible="{Binding ShowFallbackIcon}"
+                                                       FontSize="16" FontWeight="Bold"
+                                                       Foreground="#38BDF8"
+                                                       HorizontalAlignment="Center"
+                                                       VerticalAlignment="Center"/>
+                                        </Panel>
+                                    </Border>
+
+                                    <!-- Name & Status -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="3">
+                                        <TextBlock Text="{Binding DisplayName}"
+                                                   FontSize="15" FontWeight="SemiBold"
+                                                   Foreground="#F8FAFC"
+                                                   TextTrimming="CharacterEllipsis"/>
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <Ellipse Width="8" Height="8"
+                                                     Fill="{Binding StatusBrush}"
+                                                     VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding StatusText}"
+                                                       FontSize="12"
+                                                       Foreground="{Binding StatusBrush}"
+                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="•" FontSize="12" Foreground="#475569"/>
+                                            <TextBlock Text="{Binding ProcessSubtext}"
+                                                       FontSize="12" Foreground="#64748B"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <!-- Tracked Time -->
+                                    <Border Grid.Column="2"
+                                            Background="#0F172A"
+                                            CornerRadius="8"
+                                            Padding="12,6"
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding FormattedTime}"
+                                                   FontSize="16" FontWeight="Bold"
+                                                   FontFamily="Consolas, Cascadia Mono, monospace"
+                                                   Foreground="#E2E8F0"/>
+                                    </Border>
+
+                                    <!-- Quick Remove / Ignore Button -->
+                                    <Button Grid.Column="3"
+                                            Content="✕"
+                                            ToolTip.Tip="Видалити і більше не записувати"
+                                            Click="InlineRemoveButton_Click"
+                                            Background="#2A1B24"
+                                            Foreground="#FDA4AF"
+                                            CornerRadius="8"
+                                            Width="32" Height="32"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+
+            <!-- Ignored Processes List -->
+            <Border Name="IgnoredPanel"
+                    Grid.Row="2"
+                    IsVisible="False"
+                    Background="#141923"
+                    BorderBrush="#1F2937"
+                    BorderThickness="1"
+                    CornerRadius="12"
+                    Padding="6">
+                <ListBox Name="IgnoredListBox"
+                         Background="Transparent"
+                         BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <Border Background="#1A2230"
+                                    CornerRadius="10"
+                                    Padding="14,10"
+                                    Margin="2,3">
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Spacing="2">
+                                        <TextBlock Text="{Binding}"
+                                                   FontSize="15" FontWeight="SemiBold"
+                                                   Foreground="#E2E8F0"/>
+                                        <TextBlock Text="Процес ігнорується та не записується"
+                                                   FontSize="12" Foreground="#94A3B8"/>
+                                    </StackPanel>
+
+                                    <Button Grid.Column="1"
+                                            Content="Повернути"
+                                            Click="RestoreIgnoredButton_Click"
+                                            Background="#1E3A5F"
+                                            Foreground="#93C5FD"
+                                            CornerRadius="8"
+                                            Padding="14,6"
+                                            VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

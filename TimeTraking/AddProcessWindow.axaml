@@ -1,0 +1,123 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="using:TimeTraking"
+        x:Class="TimeTraking.AddProcessWindow"
+        Title="Додати програму"
+        Width="520" Height="560"
+        MinWidth="440" MinHeight="420"
+        WindowStartupLocation="CenterOwner"
+        Background="#0F131A"
+        Foreground="#F8FAFC">
+
+    <Grid RowDefinitions="Auto,Auto,*,Auto,Auto" Margin="20" RowSpacing="12">
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Spacing="4">
+            <TextBlock Text="Додати процес для відстеження"
+                       FontSize="19" FontWeight="SemiBold" Foreground="#F8FAFC"/>
+            <TextBlock Text="Оберіть зі списку запущених процесів, вкажіть .exe файл або введіть назву вручну."
+                       FontSize="12" Foreground="#94A3B8" TextWrapping="Wrap"/>
+        </StackPanel>
+
+        <!-- Search + Browse .exe -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <TextBox Name="SearchBox"
+                     Grid.Column="0"
+                     PlaceholderText="Пошук процесу або введіть назву (напр. chrome)..."
+                     TextChanged="SearchBox_TextChanged"
+                     Background="#181F2C"
+                     BorderBrush="#2A3447"
+                     CornerRadius="8"
+                     Padding="12,8"/>
+            <Button Name="BrowseExeButton"
+                    Grid.Column="1"
+                    Content="Обрати .exe..."
+                    Click="BrowseExeButton_Click"
+                    Background="#1E293B"
+                    Foreground="#E2E8F0"
+                    BorderBrush="#334155"
+                    BorderThickness="1"
+                    CornerRadius="8"
+                    Padding="14,8"/>
+        </Grid>
+
+        <!-- Running Processes List -->
+        <Border Grid.Row="2"
+                Background="#141923"
+                BorderBrush="#232D3F"
+                BorderThickness="1"
+                CornerRadius="10"
+                Padding="4">
+            <ListBox Name="ProcessesListBox"
+                     Background="Transparent"
+                     DoubleTapped="ProcessesListBox_DoubleTapped">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="local:ProcessCandidate">
+                        <Grid ColumnDefinitions="36,*,Auto" ColumnSpacing="10" Margin="4,4">
+                            <Border Grid.Column="0" Width="32" Height="32" CornerRadius="7" Background="#1E293B">
+                                <Panel>
+                                    <Image Source="{Binding Icon}"
+                                           Width="24" Height="24"
+                                           IsVisible="{Binding HasIcon}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding InitialLetter}"
+                                               IsVisible="{Binding ShowFallbackIcon}"
+                                               FontSize="14" FontWeight="Bold"
+                                               Foreground="#38BDF8"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Panel>
+                            </Border>
+
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
+                                <TextBlock Text="{Binding DisplayName}"
+                                           FontSize="14" FontWeight="Medium"
+                                           Foreground="#F1F5F9"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="{Binding ProcessName}"
+                                           FontSize="11" Foreground="#94A3B8"/>
+                            </StackPanel>
+
+                            <Border Grid.Column="2"
+                                    IsVisible="{Binding IsIgnored}"
+                                    Background="#3F1D2E"
+                                    CornerRadius="6"
+                                    Padding="8,3"
+                                    VerticalAlignment="Center">
+                                <TextBlock Text="Ігнорується" FontSize="11" Foreground="#FDA4AF"/>
+                            </Border>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <!-- Manual Info -->
+        <TextBlock Name="SelectedExeText"
+                   Grid.Row="3"
+                   FontSize="12"
+                   Foreground="#38BDF8"
+                   IsVisible="False"
+                   TextTrimming="CharacterEllipsis"/>
+
+        <!-- Action Buttons -->
+        <Grid Grid.Row="4" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+            <Button Grid.Column="1"
+                    Content="Скасувати"
+                    Click="CancelButton_Click"
+                    Background="#1E293B"
+                    Foreground="#CBD5E1"
+                    CornerRadius="8"
+                    Padding="18,9"/>
+            <Button Grid.Column="2"
+                    Content="Додати"
+                    Click="ConfirmAddButton_Click"
+                    Background="#2563EB"
+                    Foreground="White"
+                    FontWeight="SemiBold"
+                    CornerRadius="8"
+                    Padding="22,9"/>
+        </Grid>
+    </Grid>
+</Window>
