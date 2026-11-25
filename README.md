@@ -1,8 +1,14 @@
 # TimeTraking
 
+[Українська](#українська) | [English](#english)
+
+---
+
+## Українська
+
 Десктопний трекер часу роботи програм для Windows, написаний на **C# (.NET 9)** та **Avalonia UI 12**.
 
-## Можливості
+### Можливості
 
 - **Автоматичне відстеження програм** — щосекунди визначає запущені програми з відкритими вікнами та рахує час роботи у форматі `ГГ:ХХ:СС`.
 - **Реальні іконки Windows** — автоматично витягує та кешує іконки прямо з `.exe` файлів процесів.
@@ -11,7 +17,7 @@
 - **Ручне додавання** — через **«+ Додати програму»** можна обрати будь-який запущений процес, вказати `.exe` файл на диску або ввести назву вручну.
 - **Автозбереження** — статистика часу, додані та ігноровані процеси зберігаються локально в `%LocalAppData%\TimeTraking\tracker-data.json`.
 
-## Структура проєкту
+### Структура проєкту
 
 | Файл | Призначення |
 | --- | --- |
@@ -23,12 +29,12 @@
 | `TimeTraking/Services/WindowsProcessHelper.cs` | Win32 API: активне вікно, шляхи `.exe` та витяг іконок |
 | `TimeTraking/Services/TrackerStorage.cs` | Збереження та завантаження стану в JSON |
 
-## Вимоги
+### Вимоги
 
 - Windows 10 / 11
 - [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
 
-## Запуск
+### Запуск
 
 ```bash
 git clone https://github.com/CrazyDarks/TimeTreking.git
@@ -37,6 +43,52 @@ dotnet run --project TimeTraking/TimeTraking.csproj
 ```
 
 Для збірки без запуску:
+
+```bash
+dotnet build
+```
+
+---
+
+## English
+
+A desktop application time tracker for Windows built with **C# (.NET 9)** and **Avalonia UI 12**.
+
+### Features
+
+- **Automatic App Tracking** — detects running windowed applications every second and tracks usage time in `HH:mm:ss` format.
+- **Native Windows Icons** — automatically extracts and caches application icons directly from process `.exe` files.
+- **Two Tracking Modes** — track all open apps in the list or toggle **Active Window Only** to count only the focused application.
+- **Ignore List** — remove any process via **✕** or **Delete & Ignore** so it is no longer recorded; restore ignored processes anytime from the **Ignored** tab.
+- **Manual Add** — click **+ Add App** to pick any running process, browse for an `.exe` file on disk, or type a process name manually.
+- **Auto-Save** — tracked time, manually added apps, and ignored processes are persisted locally in `%LocalAppData%\TimeTraking\tracker-data.json`.
+
+### Project Structure
+
+| File | Purpose |
+| --- | --- |
+| `TimeTraking/Program.cs` | Entry point and Avalonia Desktop bootstrap |
+| `TimeTraking/App.axaml(.cs)` | Application configuration and dark Fluent theme |
+| `TimeTraking/MainWindow.axaml(.cs)` | Main window, tabs, tracking timer, and live search |
+| `TimeTraking/AddProcessWindow.axaml(.cs)` | Dialog for adding running processes or `.exe` files |
+| `TimeTraking/Models/TrackedApp.cs` | Tracked application model with `INotifyPropertyChanged` |
+| `TimeTraking/Services/WindowsProcessHelper.cs` | Win32 API helpers for foreground window, `.exe` paths, and icon extraction |
+| `TimeTraking/Services/TrackerStorage.cs` | Local JSON persistence for tracked state |
+
+### Requirements
+
+- Windows 10 / 11
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
+
+### Getting Started
+
+```bash
+git clone https://github.com/CrazyDarks/TimeTreking.git
+cd TimeTreking
+dotnet run --project TimeTraking/TimeTraking.csproj
+```
+
+To build without running:
 
 ```bash
 dotnet build
